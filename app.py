@@ -5,7 +5,7 @@ import requests
 
 # Function to fetch poster from OMDb API
 def fetch_poster(title):
-    api_key = "6581dbc6"  # Replace with your OMDb key
+    api_key =  st.secrets["omdb_api_key"] # Replace with your OMDb key
     url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}"
     data = requests.get(url).json()
     return data.get("Poster", None)
