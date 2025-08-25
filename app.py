@@ -60,7 +60,7 @@ else:
 # Title and description
 st.markdown("""
 <div style="text-align:center; margin-bottom: 25px;">
-    <h1 style="color:#333;">Movie Recommendation System</h1>
+    <h1 style="white;">Movie Recommendation System</h1>
     <p style="color:#666; font-size:18px;">Find movies similar to your favorites, with posters powered by OMDb API</p>
 </div>
 """, unsafe_allow_html=True)
