@@ -43,7 +43,7 @@ st.set_page_config(page_title="Movie Recommendation System", layout="wide")
 st.markdown("""
     <div style="text-align:center; margin-bottom: 25px;">
         <h1 style="color:white;">Movie Recommendation System</h1>
-        <p style="color:#666; font-size:18px;">Find movies similar to your favorites, with posters powered by OMDb API</p>
+        <p style="color:#666; font-size:18px;">Find movies similar to your favorites</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -74,6 +74,6 @@ if st.button("Recommend") and selected_movie_name:
 
 st.markdown("""
     <div style="text-align:center; margin-top:40px; font-size:12px; color:#999;">
-        Powered by Streamlit & OMDb API
+        Powered By AS
     </div>
 """, unsafe_allow_html=True)
