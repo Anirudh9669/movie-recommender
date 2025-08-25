@@ -1,0 +1,12 @@
+# Virtual environment
+.venv/
+
+# Large raw pickle file
+similarity.pkl
+
+# Utility scripts not needed in deployment
+pickle_compressor.py
+
+# Python cache
+__pycache__/
+*.pyc
