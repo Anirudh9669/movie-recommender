@@ -1,11 +1,12 @@
 import streamlit as st
-import pickle,gzip
+import pickle
+import gzip
 import pandas as pd
 import requests
 
 # Function to fetch poster from OMDb API
 def fetch_poster(title):
-    api_key =  st.secrets["omdb_api_key"] # Replace with your OMDb key
+    api_key = st.secrets["omdb_api_key"]  # Use secret key
     url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}"
     data = requests.get(url).json()
     return data.get("Poster", None)
@@ -18,44 +19,69 @@ def recommend(movie):
 
     recommended_movies = []
     recommended_posters = []
+
     for i in movies_list:
         title = movies.iloc[i[0]].title
         recommended_movies.append(title)
         recommended_posters.append(fetch_poster(title))
+
     return recommended_movies, recommended_posters
 
 # Load data
-movies_dict = pickle.load(open("movies_dict.pkl", "rb"))
-movies = pd.DataFrame(movies_dict)
+@st.cache_data
+def load_data():
+    movies_dict = pickle.load(open("movies_dict.pkl", "rb"))
+    movies_df = pd.DataFrame(movies_dict)
+    with gzip.open("similarity.pkl.gz", "rb") as f:
+        similarity_matrix = pickle.load(f)
+    return movies_df, similarity_matrix
 
-# Load similarity from compressed file
-with gzip.open("similarity.pkl.gz", "rb") as f:
-    similarity = pickle.load(f)
+movies, similarity = load_data()
 
-# Streamlit UI
-st.set_page_config(page_title="Movie Recommender", page_icon="", layout="wide")
+# Streamlit page configuration
+st.set_page_config(page_title="Movie Recommendation System", layout="wide")
 
+# Main title and subtitle with simple centered styling
 st.markdown(
     """
-    <h1 style='text-align: center; color: white;'>Movie Recommendation System</h1>
-    <p style='text-align: center; color: gray; font-size:18px;'>Find similar movies with posters powered by OMDb API</p>
+    <div style="text-align:center; margin-bottom: 25px;">
+        <h1 style="color:#333;">Movie Recommendation System</h1>
+        <p style="color:#666; font-size:18px;">Find movies similar to your favorites, with posters powered by OMDb API</p>
+    </div>
     """,
     unsafe_allow_html=True
 )
 
+# Movie selection dropdown with search option
 selected_movie_name = st.selectbox(
     "Select a Movie",
-    movies['title'].values,
-    index=None,
-    placeholder="Type a movie title...",
+    options=movies['title'].values,
+    index=0,
+    help="Start typing to search your favorite movie"
 )
 
+# Recommend button action
 if st.button("Recommend") and selected_movie_name:
-    recommendations, posters = recommend(selected_movie_name)
+    with st.spinner("Fetching recommendations..."):
+        recommendations, posters = recommend(selected_movie_name)
 
-    st.markdown("---")
-    cols = st.columns(5, gap="large")
+    st.markdown("---")  # Horizontal line for separation
+
+    cols = st.columns(5, gap="medium")
 
     for idx, col in enumerate(cols):
         with col:
-            st.image(posters[idx], use_container_width=True, caption=recommendations[idx])
+            if posters[idx]:
+                st.image(posters[idx], use_column_width=True, caption=recommendations[idx])
+            else:
+                st.image("https://via.placeholder.com/150?text=No+Image", caption=recommendations[idx])
+
+# Footer or credits (optional)
+st.markdown(
+    """
+    <div style="text-align:center; margin-top:40px; font-size:12px; color:#999;">
+        Powered by Streamlit & OMDb API
+    </div>
+    """,
+    unsafe_allow_html=True
+)
