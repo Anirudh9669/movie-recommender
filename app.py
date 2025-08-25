@@ -72,7 +72,7 @@ if st.button("Recommend") and selected_movie_name:
     for idx, col in enumerate(cols):
         with col:
             if posters[idx]:
-                st.image(posters[idx], use_column_width=True, caption=recommendations[idx])
+                st.image(posters[idx], use_container_width=True, caption=recommendations[idx])
             else:
                 st.image("https://via.placeholder.com/150?text=No+Image", caption=recommendations[idx])
 
