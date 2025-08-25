@@ -36,7 +36,8 @@ def load_data():
         similarity_matrix = pickle.load(f)
     return movies_df, similarity_matrix
 
-movies, similarity = load_data()
+with st.spinner("Loading data..."):
+    movies, similarity = load_data()
 
 # Streamlit page config
 st.set_page_config(page_title="Movie Recommendation System", layout="wide")
@@ -85,7 +86,7 @@ if st.button("Recommend") and selected_movie_name != "Select a movie...":
         with col:
             if idx < len(posters):
                 if posters[idx]:
-                    st.image(posters[idx], use_column_width=True, caption=recommendations[idx])
+                    st.image(posters[idx], use_container_width=True, caption=recommendations[idx])
                 else:
                     st.image("https://via.placeholder.com/150?text=No+Image", caption=recommendations[idx])
 
